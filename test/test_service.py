@@ -12,7 +12,7 @@ class TestSqlService(unittest.TestCase):
         self.fake_rows_affected = 3
         self.fake_cursor = Mock(rowcount = self.fake_rows_affected)
         self.fake_logger = Mock()
-        self.generic_error = "Generic error occured"
+        self.generic_error = "Generic error occurred"
 
         self.fake_table_name = 'tbl'
         self.fake_select_query = "SELECT attr1, attr2 FROM tbl WHERE id = '1'"
@@ -65,7 +65,7 @@ class TestSqlService(unittest.TestCase):
             self.assertEqual(expected_result['data'], actual_result['data'])        
     
         expected_result = {
-            'msg': 'An error occured when trying to connect to database',
+            'msg': 'An error occurred when trying to connect to database',
             'exception': Exception(self.generic_error)
         }
 
@@ -104,7 +104,7 @@ class TestSqlService(unittest.TestCase):
             self.assertEqual(actual_result['data'], expected_result['data']) 
     
         expected_result = {
-            'msg': 'An error occured when trying to create cursor object',
+            'msg': 'An error occurred when trying to create cursor object',
             'exception': Exception(self.generic_error)
         }
 
@@ -143,7 +143,7 @@ class TestSqlService(unittest.TestCase):
             self.assertEqual(actual_result['data'], expected_result['data']) 
     
         expected_result = {
-            'msg': 'An error occured when trying to close cursor object',
+            'msg': 'An error occurred when trying to close cursor object',
             'exception': Exception(self.generic_error)
         }
 
@@ -218,7 +218,7 @@ class TestSqlService(unittest.TestCase):
             self.assertEqual(actual_result['data'], expected_result['data']) 
 
         expected_result = {
-            'msg': f'An error occured when trying to form SELECT query',
+            'msg': f'An error occurred when trying to form SELECT query',
             'exception': Exception(self.generic_error)
         }
 
@@ -256,7 +256,7 @@ class TestSqlService(unittest.TestCase):
             self.assertEqual(actual_result['data'], expected_result['data'])
 
         expected_result = {
-            'msg': f'An error occured when trying to execute formed query',
+            'msg': f'An error occurred when trying to execute formed query',
             'exception': Exception(self.generic_error)
         }
 
@@ -292,7 +292,7 @@ class TestSqlService(unittest.TestCase):
             self.assertEqual(actual_result['data'], expected_result['data'])
 
         expected_result = {
-            'msg': f'An error occured when trying to get columns from cursor description',
+            'msg': f'An error occurred when trying to get columns from cursor description',
             'exception': IndexError('tuple index out of range')
         }
         
@@ -330,7 +330,7 @@ class TestSqlService(unittest.TestCase):
             self.assertEqual(actual_result['data'], expected_result['data']) 
 
         expected_result = {
-            'msg': f'An error occured when trying to get results from cursor',
+            'msg': f'An error occurred when trying to get results from cursor',
             'exception': Exception(self.generic_error)
         }
 
@@ -369,7 +369,7 @@ class TestSqlService(unittest.TestCase):
             self.assertEqual(actual_result['data'], expected_result['data']) 
 
         expected_result = {
-            'msg': 'An error occured when trying to zip columns with results',
+            'msg': 'An error occurred when trying to zip columns with results',
             'exception': Exception(self.generic_error)
         }
 
@@ -408,7 +408,7 @@ class TestSqlService(unittest.TestCase):
             self.assertEqual(actual_result['data'], expected_result['data']) 
 
         expected_result = {
-            'msg': f'An error occured when trying to form INSERT statement',
+            'msg': f'An error occurred when trying to form INSERT statement',
             'exception': Exception(self.generic_error)
         }
 
@@ -447,7 +447,7 @@ class TestSqlService(unittest.TestCase):
             self.assertEqual(actual_result['data'], expected_result['data'])
 
         expected_result = {
-            'msg': f'An error occured when trying to execute formed statement',
+            'msg': f'An error occurred when trying to execute formed statement',
             'exception': Exception(self.generic_error)
         }
 
@@ -480,14 +480,14 @@ class TestSqlService(unittest.TestCase):
         with self.subTest("""
         GIVEN a values for cursor parameter is passed
         WHEN the commit() method is called
-        THEN pending changes will be commited on the passed cursor
+        THEN pending changes will be committed on the passed cursor
         """):
             self.assertFalse(actual_result['error'])        
             self.assertEqual(actual_result['msg'], expected_result['msg'])
             self.assertEqual(actual_result['data'], expected_result['data'])      
 
         expected_result = {
-            'msg': f'An error occured when trying to commit changes',
+            'msg': f'An error occurred when trying to commit changes',
             'exception': Exception(self.generic_error)
         }
 
@@ -527,7 +527,7 @@ class TestSqlService(unittest.TestCase):
             self.assertEqual(actual_result['data'], expected_result['data']) 
 
         expected_result = {
-            'msg': f'An error occured when trying to form UPDATE statement',
+            'msg': f'An error occurred when trying to form UPDATE statement',
             'exception': Exception(self.generic_error)
         }
 
@@ -567,7 +567,7 @@ class TestSqlService(unittest.TestCase):
             self.assertEqual(actual_result['data'], expected_result['data']) 
 
         expected_result = {
-            'msg': f'An error occured when trying to form DELETE statement',
+            'msg': f'An error occurred when trying to form DELETE statement',
             'exception': Exception(self.generic_error)
         }
 
@@ -606,7 +606,7 @@ class TestSqlService(unittest.TestCase):
             self.assertEqual(actual_result['data'], expected_result['data'])      
 
         expected_result = {
-            'msg': f'An error occured when trying to rollback cursor change',
+            'msg': f'An error occurred when trying to rollback cursor change',
             'exception': Exception(self.generic_error)
         }
 

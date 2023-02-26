@@ -1,13 +1,4 @@
-from datetime import datetime
 import pyodbc
-from pathlib import Path
-import inspect
-
-import sys
-
-from sql_service import utils
-sys.path.insert(0, 'C:/Users/caola/Documents/Github/headcase-consult/src')
-
 
 select_query_file = "sql_service\\queries\\select_from_table.sql"
 insert_statement_file = "sql_service\\queries\\select_from_table.sql"
@@ -30,7 +21,7 @@ def form_conn_string(driver, server, database, username, password, logger):
         }
 
     except Exception as e:
-        msg =f'An error occured when trying to form connection string, {e}'
+        msg =f'An error occurred when trying to form connection string, {e}'
         logger.error(f"SQL_SVC_FRM_CONN_ERR: {msg}")
 
         return {
@@ -55,7 +46,7 @@ def connect(conn_string, logger):
         }
 
     except Exception as e:
-        msg =f'An error occured when trying to connect to database, {e}'
+        msg =f'An error occurred when trying to connect to database, {e}'
         logger.error(f"SQL_SVC_CONN_ERR: {msg}")
 
         return {
@@ -80,7 +71,7 @@ def create_cursor(conn, logger):
         }
     
     except Exception as e:
-        msg =f'An error occured when trying to create cursor object, {e}'
+        msg =f'An error occurred when trying to create cursor object, {e}'
         logger.error(f"SQL_SVC_CRT_CSR_ERR: {msg}")
         
         return {
@@ -105,7 +96,7 @@ def close_cursor(cursor, logger):
         }
        
     except Exception as e:
-        msg =f'An error occured when trying to close cursor object, {e}'
+        msg =f'An error occurred when trying to close cursor object, {e}'
         logger.error(f"SQL_SVC_CLS_CSR_ERR: {msg}")
 
         return {
@@ -130,7 +121,7 @@ def form_select_query(table, logger, file = select_query_file, attributes="*", w
         }
     
     except Exception as e:
-        msg =f'An error occured when trying to form SELECT query, {e}'
+        msg =f'An error occurred when trying to form SELECT query, {e}'
         logger.error(f"SQL_SVC_FRM_QRY_ERR: {msg}")
 
         return {
@@ -155,7 +146,7 @@ def execute_formed_query(cursor, query, logger):
         }
 
     except Exception as e:
-        msg =f'An error occured when trying to execute formed query, {e}'
+        msg =f'An error occurred when trying to execute formed query, {e}'
         logger.error(f"SQL_SVC_ECT_QRY_ERR: {msg}")
 
         return {
@@ -180,7 +171,7 @@ def get_columns(cursor_description, logger):
         }
 
     except IndexError as e:
-        msg =f'An error occured when trying to get columns from cursor description, {e}'
+        msg =f'An error occurred when trying to get columns from cursor description, {e}'
         logger.error(f"SQL_SVC_GT_CLS_ERR: {msg}")
 
         return {
@@ -205,7 +196,7 @@ def get_results(cursor, logger):
         }
 
     except Exception as e:
-        msg =f'An error occured when trying to get results from cursor, {e}'
+        msg =f'An error occurred when trying to get results from cursor, {e}'
         logger.error(f"SQL_SVC_GT_RLS_ERR: {msg}")
         return {
             'error': True,
@@ -232,7 +223,7 @@ def zip_columns_results(results, columns, logger):
         }
     
     except Exception as e:
-        msg =f'An error occured when trying to zip columns with results, {e}'
+        msg =f'An error occurred when trying to zip columns with results, {e}'
         logger.error(f"SQL_SVC_ZP_CLM_ERR: {msg}")
 
         return {
@@ -257,7 +248,7 @@ def form_insert_statement(table, columns, values, logger, file = insert_statemen
         }
     
     except Exception as e:        
-        msg =f'An error occured when trying to form INSERT statement, {e}'
+        msg =f'An error occurred when trying to form INSERT statement, {e}'
         logger.error(f"SQL_SVC_FRM_SMT_ERR: {msg}")
 
         return {
@@ -282,7 +273,7 @@ def execute_formed_statement(cursor, statement, logger):
         }
 
     except Exception as e:
-        msg =f'An error occured when trying to execute formed statement, {e}'
+        msg =f'An error occurred when trying to execute formed statement, {e}'
         logger.error(f"SQL_SVC_ECT_SMT_ERR: {msg}")
 
         return {
@@ -307,7 +298,7 @@ def commit(cursor, rows_affected, logger):
         }
     
     except Exception as e:
-        msg =f'An error occured when trying to commit changes, {e}'
+        msg =f'An error occurred when trying to commit changes, {e}'
         logger.error(f"SQL_SVC_CMT_ERR: {msg}")
 
         return {
@@ -332,7 +323,7 @@ def form_update_statement(table, params, where, logger, file = update_statement_
         }
     
     except Exception as e:
-        msg =f'An error occured when trying to form UPDATE statement, {e}'
+        msg =f'An error occurred when trying to form UPDATE statement, {e}'
         logger.error(f"SQL_SVC_FRM_UDT_ERR: {msg}")
         
         return {
@@ -357,7 +348,7 @@ def form_delete_statement(table, where, logger, file = delete_statement_file):
         }
     
     except Exception as e:
-        msg =f'An error occured when trying to form DELETE statement, {e}'
+        msg =f'An error occurred when trying to form DELETE statement, {e}'
         logger.error(f"SQL_SVC_FRM_DLT_ERR: {msg}")
         
         return {
@@ -382,7 +373,7 @@ def rollback(cursor, logger):
         }
     
     except Exception as e:
-        msg =f'An error occured when trying to rollback cursor changes, {e}'
+        msg =f'An error occurred when trying to rollback cursor changes, {e}'
         logger.error(f"SQL_SVC_RBK_ERR: {msg}")
 
         return {

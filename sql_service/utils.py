@@ -1,14 +1,14 @@
-import ast
-import uuid
+from ast import literal_eval
+from uuid import uuid4
 from datetime import datetime
 import logging
-import logging.config
+from logging import config
 
 import time
 
 
 def create_logger():
-    logging.config.dictConfig({'version': 1, 'disable_existing_loggers': True,})
+    config.dictConfig({'version': 1, 'disable_existing_loggers': True,})
     logger = logging
 
     log = logging.getLogger('werkzeug')
@@ -16,7 +16,7 @@ def create_logger():
 
     timestamp = time.strftime("%Y-%m-%d_%H-%M-%S")
 
-    logger.basicConfig(filename = f'C:/Users/caola/Documents/Github/mssqlserver-python/sql_service/logs{timestamp}.log',
+    logger.basicConfig(filename = f'C:/Users/caola/Documents/Github/mssqlserver-python/sql_service/logs/{timestamp}.log',
         filemode='w',
         level = logging.INFO,
         format = '%(asctime)s | %(levelname)s | %(message)s',
@@ -26,18 +26,9 @@ def create_logger():
     return logger
 
 def generate_uuid():
-    generated_uuid = uuid.uuid4()
+    generated_uuid = uuid4()
     
     return generated_uuid
-
-def is_valid_uuid(value):
-    try:
-        uuid.UUID(value)
- 
-        return True
-    
-    except ValueError:
-        return False
 
 def current_time():
     current_time = datetime.now().strftime("%Y/%m/%d %H:%M:%S.%f")
@@ -118,7 +109,7 @@ def get_params(params):
         params_list = []
 
         for param in params:
-            params_list.append(ast.literal_eval(param))
+            params_list.append(literal_eval(param))
 
         return params_list
 
