@@ -5,31 +5,33 @@ class SqlService():
 
     def __init__(self, statement_type, args, driver, server, database, username, password):
         self.logger = utils.create_logger()
-
+        
         self.statement_type = statement_type.upper()
-        self.transaction_id = utils.generate_uuid()
 
-        self.driver = driver
-        self.server = server
-        self.database = database
-        self.username = username
-        self.password = password
+        #self.transaction_id = utils.generate_uuid()
 
-        self.params = {
-            'table': args['table']
-        }
+        # self.driver = driver
+        # self.server = server
+        # self.database = database
+        # self.username = username
+        # self.password = password
 
-        self.params['columns'] = utils.comma_split(args['columns'])
-        self.params['values'] = utils.comma_split(args['values'])
-        self.params['params'] = utils.get_params(args['params'])
-        self.params['where'] = utils.is_key(args['where'])
+        # self.params = {
+        #     'table': args['table']
+        # }
 
-        self.valid_request = self.is_valid()
+        # self.params['columns'] = utils.comma_split(args['columns'])
+        # self.params['values'] = utils.comma_split(args['values'])
+        # self.params['params'] = utils.get_params(args['params'])
+        # self.params['where'] = utils.is_key(args['where'])
 
-        if not self.valid_request is True:
-            raise ValueError(self.valid_request)
+        # self.valid_request = self.is_valid()
+        # print(self.is_valid)
 
-        self.cursor = self.connect()
+        # if not self.valid_request is True:
+        #     raise ValueError(self.valid_request)
+
+        # self.cursor = self.connect()
 
     def is_valid(self):
         if not (self.statement_type == "DELETE" or self.statement_type == "INSERT" or self.statement_type == "SELECT" or self.statement_type == "UPDATE"):

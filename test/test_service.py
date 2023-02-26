@@ -1,9 +1,9 @@
 import unittest
 from unittest.mock import Mock, patch
 
-import sql_service
+from sql_service import service
 
-class TestSqlService(unittest.TestCase):
+class TestService(unittest.TestCase):
 
     def setUp(self):
         self.fake_valid_conn_string = 'DRIVER={ODBC Driver 18 for SQL Server};SERVER=localhost;DATABASE=testdb;UID=user;PWD=123'
@@ -33,7 +33,7 @@ class TestSqlService(unittest.TestCase):
             'data': self.fake_valid_conn_string
         }
 
-        actual_result = sql_service.form_conn_string('ODBC Driver 18 for SQL Server', 'localhost', 'testdb', 'user', '123', self.fake_logger)
+        actual_result = service.form_conn_string('ODBC Driver 18 for SQL Server', 'localhost', 'testdb', 'user', '123', self.fake_logger)
         
         with self.subTest("""
         GIVEN all parameters are provided
@@ -44,7 +44,7 @@ class TestSqlService(unittest.TestCase):
             self.assertEqual(expected_result['msg'], actual_result['msg'])
             self.assertEqual(expected_result['data'], actual_result['data'])  
 
-    @patch('sql_service.pyodbc')
+    @patch('sql_service.service.pyodbc')
     def test_connect(self, mock_conn):
         expected_result = {
             'msg': 'Successfully connected to database using pyodbc',
@@ -53,7 +53,7 @@ class TestSqlService(unittest.TestCase):
 
         mock_conn.connect.return_value = expected_result['data']
         
-        actual_result = sql_service.connect(self.fake_valid_conn_string, self.fake_logger)
+        actual_result = service.connect(self.fake_valid_conn_string, self.fake_logger)
 
         with self.subTest("""
         GIVEN a valid connection string is passed
@@ -71,7 +71,7 @@ class TestSqlService(unittest.TestCase):
 
         mock_conn.connect.side_effect = expected_result['exception']
         
-        actual_result = sql_service.connect(self.fake_invalid_conn_string, self.fake_logger)
+        actual_result = service.connect(self.fake_invalid_conn_string, self.fake_logger)
 
         with self.subTest("""
         GIVEN an exception is raised 
@@ -83,7 +83,7 @@ class TestSqlService(unittest.TestCase):
             self.assertEqual(expected_result['exception'], actual_result['exception'])        
             self.assertIsNone(actual_result['data'])        
 
-    @patch('sql_service.pyodbc')
+    @patch('sql_service.service.pyodbc')
     def test_create_cursor(self, mock_cursor):
         expected_result = {
             'msg': 'Successfully created pyodbc cursor object',
@@ -92,7 +92,7 @@ class TestSqlService(unittest.TestCase):
 
         mock_cursor.cursor.return_value = expected_result['data']
 
-        actual_result = sql_service.create_cursor(mock_cursor, self.fake_logger)
+        actual_result = service.create_cursor(mock_cursor, self.fake_logger)
 
         with self.subTest("""
         GIVEN a valid connection object is passed
@@ -110,7 +110,7 @@ class TestSqlService(unittest.TestCase):
 
         mock_cursor.cursor.side_effect = expected_result['exception']
 
-        actual_result = sql_service.create_cursor(mock_cursor, self.fake_logger)
+        actual_result = service.create_cursor(mock_cursor, self.fake_logger)
 
         with self.subTest("""
         GIVEN an exception is raised
@@ -122,7 +122,7 @@ class TestSqlService(unittest.TestCase):
             self.assertEqual(expected_result['exception'], actual_result['exception'])        
             self.assertIsNone(actual_result['data']) 
 
-    @patch('sql_service.pyodbc')
+    @patch('sql_service.service.pyodbc')
     def test_close_cursor(self, mock_cursor):
         expected_result = {
             'msg': 'Successfully closed cursor object',
@@ -131,7 +131,7 @@ class TestSqlService(unittest.TestCase):
 
         mock_cursor.close.return_value = expected_result['data']
 
-        actual_result = sql_service.close_cursor(mock_cursor, self.fake_logger)
+        actual_result = service.close_cursor(mock_cursor, self.fake_logger)
 
         with self.subTest("""
         GIVEN a valid cursor object is passed
@@ -149,7 +149,7 @@ class TestSqlService(unittest.TestCase):
 
         mock_cursor.close.side_effect = expected_result['exception']
 
-        actual_result = sql_service.close_cursor(mock_cursor, self.fake_logger)
+        actual_result = service.close_cursor(mock_cursor, self.fake_logger)
 
         with self.subTest("""
         GIVEN an exception is raised
@@ -161,7 +161,7 @@ class TestSqlService(unittest.TestCase):
             self.assertEqual(expected_result['exception'], actual_result['exception'])        
             self.assertIsNone(actual_result['data'])    
 
-    @patch('sql_service.open')
+    @patch('sql_service.service.open')
     def test_form_select_query(self, mock_query):
         expected_result = {
             'msg': f'Successfully formed SELECT query {self.fake_select_query}',
@@ -170,7 +170,7 @@ class TestSqlService(unittest.TestCase):
 
         mock_query.return_value.read.return_value = expected_result['data']
 
-        actual_result = sql_service.form_select_query(self.fake_table_name, self.fake_logger)
+        actual_result = service.form_select_query(self.fake_table_name, self.fake_logger)
 
         with self.subTest("""
         GIVEN a value for table parameter is passed
@@ -188,7 +188,7 @@ class TestSqlService(unittest.TestCase):
 
         mock_query.return_value.read.return_value = expected_result['data']
 
-        actual_result = sql_service.form_select_query(self.fake_table_name, self.fake_logger, attributes =  'attr1, attr2')
+        actual_result = service.form_select_query(self.fake_table_name, self.fake_logger, attributes =  'attr1, attr2')
 
         with self.subTest("""
         GIVEN values for table and attributes parameters are passed
@@ -206,7 +206,7 @@ class TestSqlService(unittest.TestCase):
 
         mock_query.return_value.read.return_value = expected_result['data']
 
-        actual_result = sql_service.form_select_query(self.fake_table_name, self.fake_logger, attributes =  'attr1, attr2', where = "WHERE id = '1'")
+        actual_result = service.form_select_query(self.fake_table_name, self.fake_logger, attributes =  'attr1, attr2', where = "WHERE id = '1'")
 
         with self.subTest("""
         GIVEN values for table, attributes and where parameters are passed
@@ -224,7 +224,7 @@ class TestSqlService(unittest.TestCase):
 
         mock_query.side_effect = expected_result['exception']
 
-        actual_result = sql_service.form_select_query(self.fake_table_name, self.fake_logger)
+        actual_result = service.form_select_query(self.fake_table_name, self.fake_logger)
 
         with self.subTest("""
         GIVEN an exception is raised
@@ -236,7 +236,7 @@ class TestSqlService(unittest.TestCase):
             self.assertEqual(expected_result['exception'], actual_result['exception'])        
             self.assertIsNone(actual_result['data'])  
 
-    @patch('sql_service.pyodbc')
+    @patch('sql_service.service.pyodbc')
     def test_execute_formed_query(self, mock_cursor):
         expected_result = {
             'msg': f'Successfully executed formed query {self.fake_select_query}',
@@ -245,7 +245,7 @@ class TestSqlService(unittest.TestCase):
 
         mock_cursor.execute.return_value = expected_result['data']
 
-        actual_result = sql_service.execute_formed_query(mock_cursor, self.fake_select_query, self.fake_logger)
+        actual_result = service.execute_formed_query(mock_cursor, self.fake_select_query, self.fake_logger)
         with self.subTest("""
         GIVEN values for cursor and query parameters are passed
         WHEN the execute() method is called
@@ -262,7 +262,7 @@ class TestSqlService(unittest.TestCase):
 
         mock_cursor.execute.side_effect = expected_result['exception']
 
-        actual_result = sql_service.execute_formed_query(mock_cursor, self.fake_select_query, self.fake_logger)
+        actual_result = service.execute_formed_query(mock_cursor, self.fake_select_query, self.fake_logger)
 
         with self.subTest("""
         GIVEN an exception is raised
@@ -280,7 +280,7 @@ class TestSqlService(unittest.TestCase):
             'data': self.fake_columns
         }
 
-        actual_result = sql_service.get_columns(self.fake_cursor_description, self.fake_logger)
+        actual_result = service.get_columns(self.fake_cursor_description, self.fake_logger)
         
         with self.subTest("""
         GIVEN a value for cursor description parameter is passed
@@ -296,7 +296,7 @@ class TestSqlService(unittest.TestCase):
             'exception': IndexError('tuple index out of range')
         }
         
-        actual_result = sql_service.get_columns(((), ()), self.fake_logger)
+        actual_result = service.get_columns(((), ()), self.fake_logger)
 
         with self.subTest("""
         GIVEN an exception is raised
@@ -309,7 +309,7 @@ class TestSqlService(unittest.TestCase):
             self.assertEqual(type(expected_result['exception']), type(actual_result['exception']))        
             self.assertIsNone(actual_result['data']) 
 
-    @patch('sql_service.pyodbc')
+    @patch('sql_service.service.pyodbc')
     def test_get_results(self, mock_cursor):
         expected_result = {
             'msg': 'Successfully got results from cursor',
@@ -318,7 +318,7 @@ class TestSqlService(unittest.TestCase):
 
         mock_cursor.fetchall.return_value = expected_result['data']
 
-        actual_result = sql_service.get_results(mock_cursor, self.fake_logger)
+        actual_result = service.get_results(mock_cursor, self.fake_logger)
 
         with self.subTest("""
         GIVEN a value for cursor parameter is passed
@@ -336,7 +336,7 @@ class TestSqlService(unittest.TestCase):
 
         mock_cursor.fetchall.side_effect = expected_result['exception']
         
-        actual_result = sql_service.get_results(mock_cursor, self.fake_logger)
+        actual_result = service.get_results(mock_cursor, self.fake_logger)
 
         with self.subTest("""
         GIVEN an exception is raised
@@ -348,7 +348,7 @@ class TestSqlService(unittest.TestCase):
             self.assertEqual(expected_result['exception'], actual_result['exception'])        
             self.assertIsNone(actual_result['data']) 
 
-    @patch('sql_service.zip')
+    @patch('sql_service.service.zip')
     def test_zip_columns_results(self, mock_zip):
         expected_result = {
             'msg': 'Successfully zipped columns with results',
@@ -357,7 +357,7 @@ class TestSqlService(unittest.TestCase):
 
         mock_zip.side_effect = expected_result['data']
 
-        actual_result = sql_service.zip_columns_results(self.fake_results, self.fake_columns, self.fake_logger)
+        actual_result = service.zip_columns_results(self.fake_results, self.fake_columns, self.fake_logger)
 
         with self.subTest("""
         GIVEN a value for cursor parameter is passed
@@ -375,7 +375,7 @@ class TestSqlService(unittest.TestCase):
 
         mock_zip.side_effect = expected_result['exception']
         
-        actual_result = sql_service.zip_columns_results(self.fake_results, self.fake_columns, self.fake_logger)
+        actual_result = service.zip_columns_results(self.fake_results, self.fake_columns, self.fake_logger)
 
         with self.subTest("""
         GIVEN an exception is raised
@@ -387,7 +387,7 @@ class TestSqlService(unittest.TestCase):
             self.assertEqual(expected_result['exception'], actual_result['exception'])        
             self.assertIsNone(actual_result['data']) 
 
-    @patch('sql_service.open')
+    @patch('sql_service.service.open')
     def test_form_insert_statement(self, mock_statement):
         expected_result = {
             'msg': f'Successfully formed INSERT statement {self.fake_insert_statement}',
@@ -396,7 +396,7 @@ class TestSqlService(unittest.TestCase):
 
         mock_statement.return_value.read.return_value = expected_result['data']
 
-        actual_result = sql_service.form_insert_statement(self.fake_table_name, self.fake_columns, self.fake_values, self.fake_logger)
+        actual_result = service.form_insert_statement(self.fake_table_name, self.fake_columns, self.fake_values, self.fake_logger)
 
         with self.subTest("""
         GIVEN values for table, columns and values parameters are passed
@@ -414,7 +414,7 @@ class TestSqlService(unittest.TestCase):
 
         mock_statement.side_effect = expected_result['exception']
 
-        actual_result = sql_service.form_insert_statement(self.fake_table_name, self.fake_columns, self.fake_values, self.fake_logger)
+        actual_result = service.form_insert_statement(self.fake_table_name, self.fake_columns, self.fake_values, self.fake_logger)
 
         with self.subTest("""
         GIVEN an exception is raised
@@ -426,7 +426,7 @@ class TestSqlService(unittest.TestCase):
             self.assertEqual(expected_result['exception'], actual_result['exception'])        
             self.assertIsNone(actual_result['data'])  
 
-    @patch('sql_service.pyodbc')
+    @patch('sql_service.service.pyodbc')
     def test_execute_formed_statement(self, mock_cursor):
         expected_result = {
             'msg': f'Successfully executed formed statement {self.fake_insert_statement}',
@@ -435,7 +435,7 @@ class TestSqlService(unittest.TestCase):
 
         mock_cursor.execute.return_value = expected_result['data']
 
-        actual_result = sql_service.execute_formed_statement(mock_cursor, self.fake_insert_statement, self.fake_logger)
+        actual_result = service.execute_formed_statement(mock_cursor, self.fake_insert_statement, self.fake_logger)
         
         with self.subTest("""
         GIVEN an exception is raised
@@ -453,7 +453,7 @@ class TestSqlService(unittest.TestCase):
 
         mock_cursor.execute.side_effect = expected_result['exception']
 
-        actual_result = sql_service.execute_formed_statement(mock_cursor, self.fake_insert_statement, self.fake_logger)
+        actual_result = service.execute_formed_statement(mock_cursor, self.fake_insert_statement, self.fake_logger)
 
         with self.subTest("""
         GIVEN values for cursor and query parameters are passed
@@ -465,7 +465,7 @@ class TestSqlService(unittest.TestCase):
             self.assertEqual(expected_result['exception'], actual_result['exception'])        
             self.assertIsNone(actual_result['data']) 
 
-    @patch('sql_service.pyodbc')
+    @patch('sql_service.service.pyodbc')
     def test_commit(self, mock_cursor):
         expected_result = {
             'msg': 'Successfully committed changes',
@@ -475,7 +475,7 @@ class TestSqlService(unittest.TestCase):
         mock_cursor.rowcount.return_value = self.fake_rows_affected
         mock_cursor.commit.return_value = self.fake_cursor
 
-        actual_result = sql_service.commit(mock_cursor, self.fake_rows_affected, self.fake_logger)
+        actual_result = service.commit(mock_cursor, self.fake_rows_affected, self.fake_logger)
 
         with self.subTest("""
         GIVEN a values for cursor parameter is passed
@@ -493,7 +493,7 @@ class TestSqlService(unittest.TestCase):
 
         mock_cursor.commit.side_effect = expected_result['exception']
         
-        actual_result = sql_service.commit(mock_cursor, self.fake_rows_affected, self.fake_logger)
+        actual_result = service.commit(mock_cursor, self.fake_rows_affected, self.fake_logger)
 
         with self.subTest("""
         GIVEN an exception is raised
@@ -505,7 +505,7 @@ class TestSqlService(unittest.TestCase):
             self.assertEqual(expected_result['exception'], actual_result['exception'])        
             self.assertIsNone(actual_result['data'])
 
-    @patch('sql_service.open')
+    @patch('sql_service.service.open')
     def test_form_update_statement(self, mock_statement):
         expected_result = {
             'msg': f'Successfully formed UPDATE statement {self.fake_update_statement}',
@@ -514,7 +514,7 @@ class TestSqlService(unittest.TestCase):
 
         mock_statement.return_value.read.return_value = expected_result['data']
 
-        actual_result = sql_service.form_update_statement(self.fake_table_name, self.fake_params, self.fake_where, self.fake_logger)
+        actual_result = service.form_update_statement(self.fake_table_name, self.fake_params, self.fake_where, self.fake_logger)
 
         with self.subTest("""
         GIVEN values for table, params and where parameters are passed
@@ -533,7 +533,7 @@ class TestSqlService(unittest.TestCase):
 
         mock_statement.side_effect = expected_result['exception']
 
-        actual_result = sql_service.form_update_statement(self.fake_table_name, self.fake_params, self.fake_where, self.fake_logger)
+        actual_result = service.form_update_statement(self.fake_table_name, self.fake_params, self.fake_where, self.fake_logger)
 
         with self.subTest("""
         GIVEN an exception is raised
@@ -545,7 +545,7 @@ class TestSqlService(unittest.TestCase):
             self.assertEqual(expected_result['exception'], actual_result['exception'])        
             self.assertIsNone(actual_result['data']) 
 
-    @patch('sql_service.open')
+    @patch('sql_service.service.open')
     def test_form_delete_statement(self, mock_statement):
         expected_result = {
             'msg': f'Successfully formed DELETE statement {self.fake_delete_statement}',
@@ -554,7 +554,7 @@ class TestSqlService(unittest.TestCase):
 
         mock_statement.return_value.read.return_value = expected_result['data']
 
-        actual_result = sql_service.form_delete_statement(self.fake_table_name, self.fake_where, self.fake_logger)
+        actual_result = service.form_delete_statement(self.fake_table_name, self.fake_where, self.fake_logger)
 
         with self.subTest("""
         GIVEN values for table, params and where parameters are passed
@@ -573,7 +573,7 @@ class TestSqlService(unittest.TestCase):
 
         mock_statement.side_effect = expected_result['exception']
 
-        actual_result = sql_service.form_delete_statement(self.fake_table_name, self.fake_where, self.fake_logger)
+        actual_result = service.form_delete_statement(self.fake_table_name, self.fake_where, self.fake_logger)
 
         with self.subTest("""
         GIVEN an exception is raised
@@ -585,7 +585,7 @@ class TestSqlService(unittest.TestCase):
             self.assertEqual(expected_result['exception'], actual_result['exception'])        
             self.assertIsNone(actual_result['data']) 
 
-    @patch('sql_service.pyodbc')
+    @patch('sql_service.service.pyodbc')
     def test_rollback(self, mock_cursor):
         expected_result = {
             'msg': 'Successfully rolled back cursor changes',
@@ -594,7 +594,7 @@ class TestSqlService(unittest.TestCase):
 
         mock_cursor.rollback.return_value = expected_result['data']
         
-        actual_result = sql_service.rollback(mock_cursor, self.fake_logger)
+        actual_result = service.rollback(mock_cursor, self.fake_logger)
 
         with self.subTest("""
         GIVEN values for cursor parameters are passed
@@ -612,7 +612,7 @@ class TestSqlService(unittest.TestCase):
 
         mock_cursor.rollback.side_effect = expected_result['exception']
         
-        actual_result = sql_service.rollback(mock_cursor, self.fake_logger)
+        actual_result = service.rollback(mock_cursor, self.fake_logger)
 
         with self.subTest("""
         GIVEN an exception is raised
